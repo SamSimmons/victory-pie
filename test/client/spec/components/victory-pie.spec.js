@@ -59,6 +59,25 @@ describe("components/victory-pie", () => {
       expect(labels).to.have.lengthOf(5);
     });
 
+    it("can offset labels to prevent overlapping", () => {
+      const wrapper = shallow(
+        <VictoryPie
+          offsetLabels
+          data={[
+            { x:"a", y: 1 },
+            { x:"b", y: 1 },
+            { x:"c", y: 100 }
+          ]}
+        />
+      );
+
+      const labels = wrapper.find(VictoryLabel);
+      const y1 = labels.nodes[0].props.y;
+      const y2 = labels.nodes[1].props.y;
+      const diff = Math.abs(y1 - y2);
+      expect(diff).to.be.above(9);
+    });
+
     it("renders 0 slice labels for empty label array", () => {
       const wrapper = shallow(
         <VictoryPie

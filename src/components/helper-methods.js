@@ -133,7 +133,8 @@ export default {
   checkLabelOverlapping(current, labels) {
     // if only one label it can't overlap with itself
     if (labels.length < 1 || !current) { return false; }
-    const threshold = current.style.fontSize || 2;
+    // Will try to only shift the label by half the textsize with an extra 2px for padding
+    const threshold = (current.style.fontSize / 2) + 2 || 12;
     let overlapping = false;
     forEach(labels, (label) => {
       const yDiff = current.y - label.props.y;
