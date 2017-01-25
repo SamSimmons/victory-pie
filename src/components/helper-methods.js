@@ -1,4 +1,4 @@
-import { assign, defaults, isFunction, omit } from "lodash";
+import { assign, defaults, isFunction, omit, forEach } from "lodash";
 import * as d3Shape from "d3-shape";
 
 import { Helpers, Data, Style } from "victory-core";
@@ -123,6 +123,26 @@ export default {
     } else {
       return "left";
     }
+  },
+
+  shiftLabel(labelProps) {
+    const shiftAmount = 2;
+    return assign({}, labelProps, {y: labelProps.y + shiftAmount});
+  },
+
+  checkLabelOverlapping(current, labels) {
+    // if only one label it can't overlap with itself
+    if (labels.length < 1 || !current) { return false; }
+    const threshold = current.style.fontSize || 2;
+    let overlapping = false;
+    forEach(labels, (label) => {
+      const yDiff = current.y - label.props.y;
+      if (Math.abs(yDiff) > threshold) {
+        return;
+      }
+      overlapping = true;
+    });
+    return overlapping;
   },
 
   getTextAnchor(orientation) {

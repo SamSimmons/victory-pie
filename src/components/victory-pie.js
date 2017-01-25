@@ -85,6 +85,7 @@ class VictoryPie extends React.Component {
     labelRadius: PropTypes.oneOfType([ CustomPropTypes.nonNegative, PropTypes.func ]),
     labels: PropTypes.oneOfType([ PropTypes.func, PropTypes.array ]),
     name: PropTypes.string,
+    offsetLabels: PropTypes.bool,
     padAngle: CustomPropTypes.nonNegative,
     padding: PropTypes.oneOfType([
       PropTypes.number,
@@ -150,7 +151,10 @@ class VictoryPie extends React.Component {
       const dataProps = this.getComponentProps(dataComponent, "data", index);
       dataComponents[index] = React.cloneElement(dataComponent, dataProps);
 
-      const labelProps = this.getComponentProps(labelComponent, "labels", index);
+      let labelProps = this.getComponentProps(labelComponent, "labels", index);
+      while (props.offsetLabels && PieHelpers.checkLabelOverlapping(labelProps, labelComponents)) {
+        labelProps = PieHelpers.shiftLabel(labelProps);
+      }
       if (labelProps && labelProps.text !== undefined && labelProps.text !== null) {
         labelComponents[index] = React.cloneElement(
           labelComponent, assign({}, labelProps, {renderInPortal: false})
